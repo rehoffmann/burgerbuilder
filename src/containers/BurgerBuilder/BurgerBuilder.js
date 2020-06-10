@@ -25,7 +25,8 @@ state ={
         bacon: 0
     },
     totalPrice: 0,
-    purchasable: false
+    purchasable: false,
+    purchasing: false
 }
 
 addIngredientHandler = (type) => {
@@ -59,6 +60,10 @@ removeIngredientHandler = (type) => {
     this.updatePurchaseState(updatedIngredients);
 }
 
+purchaseHandler = () => {
+    this.setState({purchasing: true});
+}
+
 //see lesson 136, if price is more than 0 set purchasable to true
 updatePurchaseState (ingredients){
     
@@ -72,6 +77,13 @@ updatePurchaseState (ingredients){
     this.setState({purchasable: sum > 0});
 }
 
+purchaseCancelHandler = () => {
+    this.setState({purchasing: false});
+}
+
+purchaseContinueHandler = () => {
+    alert('Not Able To Continue');
+}
 
     render(){
 
@@ -83,8 +95,12 @@ updatePurchaseState (ingredients){
         }
         return (
             <Aux>
-                <Modal>
-                    <OrderSummary ingredients={this.state.ingredients}/>
+                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                    <OrderSummary 
+                        ingredients={this.state.ingredients}
+                        purchaseCanceled={this.purchaseCancelHandler}
+                        purchaseContinued={this.purchaseContinueHandler}
+                        price={this.state.totalPrice}/>
                 </Modal>
                 <Burger ingredients={this.state.ingredients}/>
             <BuildControls
@@ -92,7 +108,8 @@ updatePurchaseState (ingredients){
                 ingredientRemoved = {this.removeIngredientHandler}
                 disabled = {disabledInfo}
                 price= {this.state.totalPrice}
-                purchasable = {this.state.purchasable}/>
+                purchasable = {this.state.purchasable}
+                ordering = {this.purchaseHandler}/>
             </Aux>
         );
     }
